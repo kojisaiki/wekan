@@ -89,11 +89,21 @@ BlazeComponent.extendComponent({
     return TAPi18n.__(viewTitles[this.getView()]);
   },
 
+  showTongueTitle() {
+    if (this.isOpen())
+      return `${TAPi18n.__('sidebar-close')}`;
+    else
+      return `${TAPi18n.__('sidebar-open')}`;
+  },
+
   events() {
     return [{
       'click .js-hide-sidebar': this.hide,
       'click .js-toggle-sidebar': this.toggle,
       'click .js-back-home': this.setView,
+      'click .js-shortcuts'() {
+        FlowRouter.go('shortcuts');
+      },
     }];
   },
 }).register('sidebar');
@@ -134,8 +144,8 @@ Template.memberPopup.events({
     Popup.close();
   }),
   'click .js-leave-member'() {
-    const currentBoard = Boards.findOne(Session.get('currentBoard'));
-    Meteor.call('quitBoard', currentBoard, (err, ret) => {
+    const boardId = Session.get('currentBoard');
+    Meteor.call('quitBoard', boardId, (err, ret) => {
       if (!ret && ret) {
         Popup.close();
         FlowRouter.go('home');
